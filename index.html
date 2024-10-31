@@ -1,73 +1,56 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="https://www.w3.org/1999/xhtml">
-<head>
-	<title>Leaflet List Markers</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="stylesheet" href="examples/style.css" />
-<link rel="stylesheet" href="//unpkg.com/github-fork-ribbon-css@0.2.3/gh-fork-ribbon.css"></head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="https://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<link rel="stylesheet" href="//unpkg.com/leaflet@1.3.4/dist/leaflet.css" />
+<link rel="stylesheet" href="../src/leaflet-list-markers.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
 
-<body id="home">
+<body>
+<h3><a href="../"><big>◄</big> Leaflet List Markers</a></h3>
 
-<h2>Leaflet List Markers</h2>
+<h4>Simple Example: <em>Center random italy citi and show visible markers</em></h4>
+<div id="map"></div>
 
-<div id="desc">
-	A Leaflet Control for listing visible markers/features in a interactive box<br />
-	<div style="position:absolute;top:0;right:-120px">
-		<iframe src="https://ghbtns.com/github-btn.html?user=stefanocudini&amp;repo=leaflet-list-markers&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="104px" height="20px"></iframe>
-	</div>
-	<br />
-	Other useful stuff for <a href="https://opengeo.tech/maps/">Web Mapping...</a>
-</div>
+<script src="//unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+<script src="../src/leaflet-list-markers.js"></script>
+<script src="cities-italy.js"></script>
+<script>
 
-<div style="clear:both"></div>
+	var map = new L.Map('map', {zoom: 10, minZoom:10, center: L.latLng(43.90974,10.2419) });	//set center from first location
 
-<div class="contents">
-	<h4>Features</h4>
-	<ul id="ff">
-		<li>List Visible Markers</li>
-		<li>Customize item text by marker attribute</li>
-		<li>Locate marker on item click</li>
-		<li>Customize style icon and arrow for items list</li>
-		<li><strike>List GeoJSON features</strike> <em>coming soon</em></li>
-	</ul>
-	<h4>Examples</h4>
-	<ul id="examples">
-		<li><a href="examples/simple.html">Simple</a></li>		
-	</ul>
-</div>
-<!-- <div class="contents"></div> -->
-<div class="contents">
-	<h4>Code repositories</h4>
-	<a target="_blank" href="https://github.com/stefanocudini/leaflet-list-markers">Github.com</a>
-	<br />	
-<!-- 	<a target="_blank" href="https://bitbucket.org/zakis_/leaflet-search">Bitbucket.org</a>
-	<br />
-	<a target="_blank" href="https://npmjs.org/package/leaflet-search">Node Packaged Module</a>
-	<br />	
-	<a target="_blank" href="https://atmosphere.meteor.com/package/leaflet-search">Atmosphere Meteor JS</a>
-	<br />	 -->
+	map.addLayer(new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));	//base layer
 
-	<h4>Website</h4>
-	<a href="https://opengeo.tech/maps/leaflet-list-markers/">opengeo.tech/maps/leaflet-list-markers</a>
-	<br />
+	var markersLayer = new L.LayerGroup();	//layer contain searched elements
+	map.addLayer(markersLayer);
 
-	<h4>Download</h4>
-	<ul>
-		<li><a href="https://github.com/stefanocudini/leaflet-list-markers/archive/master.zip">Dev Pack (.zip)</a></li>
-		<li><a href="dist/leaflet-list-markers.src.js">Source Code (.js)</a></li>
-		<li><a href="dist/leaflet-list-markers.min.js">Compressed (.min.js)</a></li>		
-	</ul>
-</div>
+	////////////populate map from cities-italy.js
+	for(var i in cities)
+		L.marker(L.latLng(cities[i].loc), {title: cities[i].name}).addTo( markersLayer );
 
+	//TODO make example using label option with pop fields
 	
-<a href="https://github.com/stefanocudini/leaflet-list-markers" class="github-fork-ribbon" data-ribbon="Fork me on GitHub">Github</a>
+	//inizialize Leaflet List Markers
+	var list = new L.Control.ListMarkers({layer: markersLayer, itemIcon: null});
+	
+	list.on('item-mouseover', function(e) {
+		e.layer.setIcon(L.icon({
+			iconUrl: '../images/select-marker.png'
+		}))
+	}).on('item-mouseout', function(e) {
+		e.layer.setIcon(L.icon({
+			iconUrl: L.Icon.Default.imagePath+'/marker-icon.png'
+		}))
+	});
 
-<div style="clear:both;font-size:.85em;margin-bottom:1em">
-	<b>For questions and bugs</b> I recommend you to <a href="https://github.com/stefanocudini/leaflet-list-markers/issues">create New Issue</a> on Github repository.</strong><br />
-	Or to obtain a fast response consult <a href="https://groups.google.com/forum/?hl=it&fromgroups=#!forum/leaflet-js">Official Leaflet community forum</a>.<br />
-	<br />
-	This is a micro discussion area for methods of implementation.<br />
-</div>
+	map.addControl( list );
+	
 
+</script>
+
+<div id="copy"><a href="https://opengeo.tech/">Opengeo.tech</a> &bull; <a rel="author" href="https://opengeo.tech/stefano-cudini/">Stefano Cudini</a></div>
+	
 </body>
 </html>
